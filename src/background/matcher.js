@@ -1,13 +1,13 @@
 /**
- * My Buddy - Fuzzy Matching & Search Engine
- * High-precision string normalization, token overlap, and Levenshtein similarity.
+ * Chromy 2 - High-Precision Fuzzy Matching & Search Engine
+ * Normalization, Token Overlap (Jaccard Index), Levenshtein Distance, and Option Set Matching.
  */
 
 function normalizeText(str) {
   if (!str) return '';
   return str
     .toLowerCase()
-    .replace(/[^\w\s]/gi, ' ') // replace punctuation with spaces
+    .replace(/[^\w\s]/gi, ' ')
     .replace(/\s+/g, ' ')
     .trim();
 }
@@ -15,7 +15,6 @@ function normalizeText(str) {
 function getTokens(str) {
   const normalized = normalizeText(str);
   if (!normalized) return [];
-  // Filter out short stop words (e.g., a, an, the, is, of, to, in)
   const stopWords = new Set(['a', 'an', 'the', 'is', 'are', 'was', 'were', 'of', 'to', 'in', 'for', 'on', 'with', 'at', 'by', 'from', 'it', 'this', 'that']);
   return normalized
     .split(' ')
@@ -62,9 +61,9 @@ function calculateLevenshteinDistance(a, b) {
         matrix[i][j] = matrix[i - 1][j - 1];
       } else {
         matrix[i][j] = Math.min(
-          matrix[i - 1][j - 1] + 1, // substitution
-          matrix[i][j - 1] + 1,     // insertion
-          matrix[i - 1][j] + 1      // deletion
+          matrix[i - 1][j - 1] + 1,
+          matrix[i][j - 1] + 1,
+          matrix[i - 1][j] + 1
         );
       }
     }
@@ -82,44 +81,66 @@ function calculateLevenshteinSimilarity(a, b) {
   return 1.0 - (dist / maxLen);
 }
 
-function computeMatchScore(pageQuestionText, kbQuestionText) {
+function computeMatchScore(pageQuestionText, kbQuestionText, pageOptions = [], kbOptions = []) {
   const normPage = normalizeText(pageQuestionText);
   const normKb = normalizeText(kbQuestionText);
 
-  // 1. Direct exact match
-  if (normPage === normKb) return 1.0;
+  // 1. Direct exact question match
+  if (normPage === normKb && normPage.length > 5) return 1.0;
 
   // 2. Substring containment check
-  if (normPage.length > 20 && normKb.length > 20) {
+  if (normPage.length > 10 && normKb.length > 10) {
     if (normPage.includes(normKb) || normKb.includes(normPage)) {
       return 0.95;
     }
   }
 
-  // 3. Combined Jaccard Token & Levenshtein metric
+  // 3. Question Token & Levenshtein score
   const jaccardScore = calculateJaccardSimilarity(pageQuestionText, kbQuestionText);
   const levenshteinScore = calculateLevenshteinSimilarity(pageQuestionText, kbQuestionText);
+  let qScore = (jaccardScore * 0.6) + (levenshteinScore * 0.4);
 
-  // Weighted hybrid score
-  return (jaccardScore * 0.6) + (levenshteinScore * 0.4);
+  // 4. Option set similarity boost
+  if (pageOptions.length > 0 && kbOptions.length > 0) {
+    let optionMatches = 0;
+    pageOptions.forEach(pOpt => {
+      const normPOpt = normalizeText(pOpt);
+      if (normPOpt.length > 5) {
+        kbOptions.forEach(kOpt => {
+          const normKOpt = normalizeText(kOpt);
+          if (normKOpt.includes(normPOpt) || normPOpt.includes(normKOpt)) {
+            optionMatches++;
+          }
+        });
+      }
+    });
+
+    const optScore = optionMatches / Math.max(pageOptions.length, 1);
+    if (optScore >= 0.5) {
+      qScore = Math.max(qScore, 0.85 + (optScore * 0.15));
+    }
+  }
+
+  return qScore;
 }
 
 /**
  * Finds best matching question from stored Knowledge Base entries.
  * @param {string} queryQuestion - Question text detected on webpage.
  * @param {Array} knowledgeBaseEntries - Array of stored Q&A objects.
- * @param {string} [activeModuleCategory] - Optional category title filter.
+ * @param {string} [activeCategory] - Optional category title filter.
+ * @param {Array} [pageOptions] - Array of options extracted from webpage.
  */
-function findBestMatch(queryQuestion, knowledgeBaseEntries, activeModuleCategory = null) {
-  if (!queryQuestion || !knowledgeBaseEntries || knowledgeBaseEntries.length === 0) {
+function findBestMatch(queryQuestion, knowledgeBaseEntries, activeCategory = null, pageOptions = []) {
+  if (!knowledgeBaseEntries || knowledgeBaseEntries.length === 0) {
     return { matchFound: false, reason: 'No database entries stored' };
   }
 
   let candidates = knowledgeBaseEntries;
 
-  // Optional category pre-filter if active module detected
-  if (activeModuleCategory) {
-    const normCategory = normalizeText(activeModuleCategory);
+  // Optional category pre-filter if specific module detected
+  if (activeCategory && activeCategory !== 'Checkpoint Exam' && activeCategory !== 'General') {
+    const normCategory = normalizeText(activeCategory);
     const categoryMatches = knowledgeBaseEntries.filter(entry => {
       if (!entry.category) return false;
       const normEntryCat = normalizeText(entry.category);
@@ -135,17 +156,17 @@ function findBestMatch(queryQuestion, knowledgeBaseEntries, activeModuleCategory
   let highestScore = 0;
 
   for (const entry of candidates) {
-    const score = computeMatchScore(queryQuestion, entry.question);
+    const score = computeMatchScore(queryQuestion, entry.question, pageOptions, entry.options || []);
     if (score > highestScore) {
       highestScore = score;
       bestEntry = entry;
     }
   }
 
-  // Fallback to searching all entries if category filtering returned low score
+  // Fallback to full database search if candidate score is low
   if (highestScore < 0.4 && candidates !== knowledgeBaseEntries) {
     for (const entry of knowledgeBaseEntries) {
-      const score = computeMatchScore(queryQuestion, entry.question);
+      const score = computeMatchScore(queryQuestion, entry.question, pageOptions, entry.options || []);
       if (score > highestScore) {
         highestScore = score;
         bestEntry = entry;
@@ -153,7 +174,7 @@ function findBestMatch(queryQuestion, knowledgeBaseEntries, activeModuleCategory
     }
   }
 
-  const SCORE_THRESHOLD = 0.40; // minimum 40% confidence to claim match
+  const SCORE_THRESHOLD = 0.35; // minimum 35% confidence threshold
 
   if (bestEntry && highestScore >= SCORE_THRESHOLD) {
     return {

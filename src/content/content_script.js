@@ -1,6 +1,6 @@
 /**
- * My Buddy - Main Content Script Controller
- * Coordinates page question observation, overlay UI rendering, and background worker communications.
+ * Chromy 2 - Main Content Script Controller
+ * Coordinates DOM observer, overlay UI rendering, and background worker communications.
  */
 
 (function () {
@@ -13,7 +13,7 @@
   if (!overlay || !observer) return;
 
   function queryAnswerForQuestion(questionData) {
-    const { questionText, category } = questionData;
+    const { questionText, options, category } = questionData;
 
     overlay.updateDetectedQuestion(questionText);
 
@@ -22,6 +22,7 @@
         {
           action: 'get_answer',
           question: questionText,
+          options: options || [],
           category: category
         },
         (response) => {
