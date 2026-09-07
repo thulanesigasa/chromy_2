@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chromy 2 - Extension Options & Document Hub</title>
+  <link rel="stylesheet" href="options.css">
+  <script src="../../assets/lib/mammoth.min.js"></script>
+</head>
+<body>
+  <div class="app-layout">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="brand">
+        <span class="brand-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <path d="m9 12 2 2 4-4"/>
+          </svg>
+        </span>
+        <div class="brand-text">
+          <h2>Chromy 2</h2>
+          <span>Document Management Hub</span>
+        </div>
+      </div>
+
+      <nav class="nav-menu">
+        <button class="nav-item active" data-target="section-upload">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          Upload Exam Docs
+        </button>
+        <button class="nav-item" data-target="section-database">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          Knowledge Base (<span id="nav-doc-count">0</span>)
+        </button>
+        <button class="nav-item" data-target="section-test">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          Test Query Matcher
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button id="btn-export-backup" class="btn-sidebar">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Export JSON Backup
+        </button>
+        <button id="btn-clear-database" class="btn-sidebar btn-danger">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+          Clear Knowledge Base
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Section Content -->
+    <main class="main-content">
+      <!-- Section 1: Upload Documents -->
+      <section id="section-upload" class="content-section active">
+        <header class="section-header">
+          <h1>Upload Exam Documents & Study Banks</h1>
+          <p>Upload Word (.docx), JSON, or Text files containing your checkpoint exam questions and answers.</p>
+        </header>
+
+        <div class="card">
+          <div class="form-group">
+            <label for="opt-category-input">Category / Exam Module Name</label>
+            <input type="text" id="opt-category-input" class="form-input" placeholder="e.g. CyberOps Module 1: The Danger, Checkpoint Exam 1">
+          </div>
+
+          <div class="dropzone" id="opt-dropzone">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+              <path d="M12 18v-6"/>
+              <path d="m9 15 3-3 3 3"/>
+            </svg>
+            <div class="dropzone-text">
+              <h3>Click or Drag & Drop Word Documents (.docx)</h3>
+              <p>Supports Microsoft Word files (.docx), JSON database backups, or .txt Q&A files</p>
+            </div>
+            <input type="file" id="opt-file-input" accept=".docx,.json,.txt" hidden>
+          </div>
+
+          <div class="divider"><span>OR PASTE RAW TEXT Q&A</span></div>
+
+          <div class="form-group">
+            <textarea id="opt-paste-input" class="form-textarea" placeholder="Paste Question and Answer text here...&#10;Example:&#10;Q: What is a Threat Actor?&#10;Answer: An individual or group that conducts malicious cyber activities."></textarea>
+          </div>
+
+          <button id="opt-btn-parse-text" class="btn-primary">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            Parse & Save Q&A Entries
+          </button>
+
+          <div id="opt-upload-feedback" class="feedback-box"></div>
+        </div>
+      </section>
+
+      <!-- Section 2: Knowledge Base Database -->
+      <section id="section-database" class="content-section">
+        <header class="section-header">
+          <h1>Exam Knowledge Base</h1>
+          <p>Manage uploaded documents and inspect stored questions and answers.</p>
+        </header>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <span class="stat-value" id="opt-total-questions">0</span>
+            <span class="stat-label">Total Stored Questions</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-value" id="opt-total-docs">0</span>
+            <span class="stat-label">Uploaded Documents</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3>Uploaded Documents</h3>
+          </div>
+          <div id="opt-doc-table" class="doc-table-container">
+            <div class="empty-state">No documents stored in knowledge base yet.</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3>Stored Q&A Entries Preview</h3>
+            <input type="text" id="opt-search-preview" class="form-input form-input-sm" placeholder="Search stored entries...">
+          </div>
+          <div id="opt-qa-preview-list" class="qa-preview-list">
+            <div class="empty-state">No Q&A entries stored yet. Upload a document to populate database.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 3: Test Matcher -->
+      <section id="section-test" class="content-section">
+        <header class="section-header">
+          <h1>Test Question Search Engine</h1>
+          <p>Verify fuzzy matching confidence scores against your stored exam documents.</p>
+        </header>
+
+        <div class="card">
+          <div class="form-group">
+            <label for="opt-test-query">Query Question Text</label>
+            <textarea id="opt-test-query" class="form-textarea" placeholder="Paste or type a question to test matcher engine..."></textarea>
+          </div>
+          <button id="opt-btn-test-match" class="btn-primary">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            Run Test Search Match
+          </button>
+
+          <div id="opt-test-results" class="test-results">
+            <div class="empty-state">Results will appear here after running test search query.</div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="options.js"></script>
+</body>
+</html>

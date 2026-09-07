@@ -23,6 +23,13 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  const btnOpenOptions = document.getElementById('btn-open-options');
+  if (btnOpenOptions) {
+    btnOpenOptions.addEventListener('click', () => {
+      chrome.runtime.openOptionsPage();
+    });
+  }
+
   // Dropzone & File Input setup
   const dropzone = document.getElementById('dropzone');
   const fileInput = document.getElementById('file-input');
