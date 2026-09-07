@@ -1,40 +1,92 @@
-const { findBestMatch } = require('./src/background/matcher.js');
+/**
+ * Test script — validates the fixed matcher against the real checkpoint_1.json dataset.
+ * Run with: node test_matcher.js
+ */
+
+const { findBestMatch, calculateOptionSetScore } = require('./src/background/matcher.js');
 const fs = require('fs');
-const path = require('path');
 
-console.log('--- Testing Chromy 2 Fuzzy Matcher Engine with Checkpoint 1 Data ---');
+const knowledgeBase = JSON.parse(fs.readFileSync('./docs/checkpoint_1.json', 'utf8'));
 
-const checkpointData = JSON.parse(fs.readFileSync(path.join(__dirname, 'docs', 'checkpoint_1.json'), 'utf8'));
+// ── Test cases simulating what NetAcad puts on screen ───────────────────────
 
-console.log(`Loaded ${checkpointData.length} questions from docs/checkpoint_1.json`);
+const tests = [
+  {
+    label: 'Q21: Options detected, question text EMPTY (original bug case)',
+    question: '',
+    options: [
+      'websites to check account fees',
+      'websites to make purchases',
+      'websites to check stock prices',
+      'websites to check product details'
+    ],
+    expectedAnswer: 'websites to check account fees'
+  },
+  {
+    label: 'Q21: Full question text extracted correctly',
+    question: 'What websites should a user avoid when connecting to a free and open wireless hotspot?',
+    options: [
+      'websites to check account fees',
+      'websites to make purchases',
+      'websites to check stock prices',
+      'websites to check product details'
+    ],
+    expectedAnswer: 'websites to check account fees'
+  },
+  {
+    label: 'Q1: CISSP certification question',
+    question: 'Which organization is an international nonprofit organization that offers the CISSP certification?',
+    options: ['CompTIA', '(ISC)2', 'IEEE', 'GIAC'],
+    expectedAnswer: '(ISC)2'
+  },
+  {
+    label: 'Q2: SOAR question (options only)',
+    question: '',
+    options: [
+      'SOAR was designed to address critical security events and high-end investigation.',
+      'SOAR would benefit smaller organizations because it requires no cybersecurity analyst involvement once installed.',
+      'SOAR automates incident investigation and responds to workflows based on playbooks.',
+      'SOAR automation guarantees an uptime factor of "5 nines".'
+    ],
+    expectedAnswer: 'SOAR automates incident investigation and responds to workflows based on playbooks.'
+  },
+  {
+    label: 'Q11: Ransomware question — long question, option fallback',
+    question: '',
+    options: ['Trojan', 'spyware', 'adware', 'ransomware'],
+    expectedAnswer: 'ransomware'
+  },
+  {
+    label: 'Q27: DDoS question (question only, no options)',
+    question: 'Which cyber attack involves a coordinated attack from a botnet of zombie computers?',
+    options: [],
+    expectedAnswer: 'DDoS'
+  }
+];
 
-// Test 1: CISSP certification question
-const q1 = 'Which organization is an international nonprofit organization that offers the CISSP certification?';
-const r1 = findBestMatch(q1, checkpointData);
-console.log('\nTest 1 (CISSP Question):');
-console.log('Match Found:', r1.matchFound);
-console.log('Score:', r1.score + '%');
-console.log('Answer:', r1.answer);
+let passed = 0;
+let failed = 0;
 
-// Test 2: SOAR benefit question
-const q2 = 'What is a benefit to an organization of using SOAR as part of the SIEM system?';
-const r2 = findBestMatch(q2, checkpointData);
-console.log('\nTest 2 (SOAR Question):');
-console.log('Match Found:', r2.matchFound);
-console.log('Score:', r2.score + '%');
-console.log('Answer:', r2.answer);
+tests.forEach(test => {
+  const result = findBestMatch(test.question, knowledgeBase, null, test.options);
 
-// Test 3: SOC Tier 3 question
-const q3 = 'Which personnel in a SOC are assigned the task of hunting for potential threats and implementing threat detection tools?';
-const r3 = findBestMatch(q3, checkpointData);
-console.log('\nTest 3 (SOC Tier 3 Question):');
-console.log('Match Found:', r3.matchFound);
-console.log('Score:', r3.score + '%');
-console.log('Answer:', r3.answer);
+  const ok = result.matchFound && result.answer === test.expectedAnswer;
+  if (ok) {
+    passed++;
+    console.log(`✅ PASS [${result.score}%] ${test.label}`);
+    console.log(`   Answer: "${result.answer}"`);
+  } else {
+    failed++;
+    console.log(`❌ FAIL [${result.score || 0}%] ${test.label}`);
+    console.log(`   Expected: "${test.expectedAnswer}"`);
+    console.log(`   Got:      "${result.answer || '(no match)'}"`);
+    if (result.bestCandidate) {
+      console.log(`   Best:     "${result.bestCandidate}"`);
+    }
+  }
+  console.log('');
+});
 
-if (r1.matchFound && r2.matchFound && r3.matchFound) {
-  console.log('\n✅ ALL CHECKPOINT 1 MATCHER TESTS PASSED SUCCESSFULLY!');
-} else {
-  console.error('\n❌ MATCHER TEST FAILED!');
-  process.exit(1);
-}
+console.log(`\n══════════════════════════════`);
+console.log(`Results: ${passed}/${tests.length} passed, ${failed} failed`);
+process.exit(failed > 0 ? 1 : 0);
