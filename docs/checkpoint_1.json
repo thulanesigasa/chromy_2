@@ -1,0 +1,367 @@
+[
+  {
+    "id": "checkpoint_1_1",
+    "question": "Which organization is an international nonprofit organization that offers the CISSP certification?",
+    "options": [
+      "CompTIA",
+      "(ISC)2",
+      "IEEE",
+      "GIAC"
+    ],
+    "answer": "(ISC)2",
+    "category": "Checkpoint Exam: Threat Actors and Defenders Group Exam",
+    "sourceDoc": "checkpoint_1.docx"
+  },
+  {
+    "id": "checkpoint_1_2",
+    "question": "What is a benefit to an organization of using SOAR as part of the SIEM system?",
+    "options": [
+      "SOAR was designed to address critical security events and high-end investigation.",
+      "SOAR would benefit smaller organizations because it requires no cybersecurity analyst involvement once installed.",
+      "SOAR automates incident investigation and responds to workflows based on playbooks.",
+      "SOAR automation guarantees an uptime factor of \"5 nines\"."
+    ],
+    "answer": "SOAR automates incident investigation and responds to workflows based on playbooks.",
+    "category": "Checkpoint Exam: Threat Actors and Defenders Group Exam",
+    "sourceDoc": "checkpoint_1.docx"
+  },
+  {
+    "id": "checkpoint_1_3",
+    "question": "Which personnel in a SOC are assigned the task of hunting for potential threats and implementing threat detection tools?",
+    "options": [
+      "Tier 3 SME",
+      "Tier 2 Incident Reporter",
+      "Tier 1 Analyst",
+      "SOC Manager"
+    ],
+    "answer": "Tier 3 SME",
+    "category": "Checkpoint Exam: Threat Actors and Defenders Group Exam",
+    "sourceDoc": "checkpoint_1.docx"
+  },
+  {
+    "id": "checkpoint_1_4",
+    "question": "Which three technologies should be included in a SOC security information and event management system? (Choose three.)",
+    "options": [
+      "security monitoring",
+      "threat intelligence",
+      "proxy service",
+      "firewall appliance",
+      "intrusion prevention",
+      "log management"
+    ],
+    "answer": "security monitoring",
+    "category": "Checkpoint Exam: Threat Actors and Defenders Group Exam",
+    "sourceDoc": "checkpoint_1.docx"
+  },
+  {
+    "id": "checkpoint_1_5",
+    "question": "The term cyber operations analyst refers to which group of personnel in a SOC?",
+    "options": [
+      "Tier 1 personnel",
+      "Tier 3 personnel",
+      "Tier 2 personnel",
+      "SOC managers"
+    ],
+    "answer": "Tier 1 personnel",
+    "category": "Checkpoint Exam: Threat Actors and Defenders Group Exam",
+    "sourceDoc": "checkpoint_1.docx"
+  },
+  {
+    "id": "checkpoint_1_6",
+    "question": "How does a security information and event management system (SIEM) in a SOC help the personnel fight against security threats?",
+    "options": [
+      "by analyzing logging data in real time",
+      "by combining data from multiple technologies",
+      "by integrating all security devices and appliances in an organization",
+      "by dynamically implementing firewall rules"
+    ],
+    "answer": "by combining data from multiple technologies",
+    "category": "Checkpoint Exam: Threat Actors and Defenders Group Exam",
+    "sourceDoc": "checkpoint_1.docx"
+  },
+  {
+    "id": "checkpoint_1_7",
+    "question": "An SOC is searching for a professional to fill a job opening. The employee must have expert-level skills in networking, endpoint, threat intelligence, and malware reverse engineering in order to search for cyber threats hidden within the network. Which job within an SOC requires a professional with those skills?",
+    "options": [
+      "Incident Responder",
+      "Alert Analyst",
+      "SOC Manager",
+      "Threat Hunter"
+    ],
+    "answer": "Threat Hunter",
+    "category": "Checkpoint Exam: Threat Actors and Defenders Group Exam",
+    "sourceDoc": "checkpoint_1.docx"
+  },
+  {
+    "id": "checkpoint_1_8",
+    "question": "Which three are major categories of elements in a security operations center? (Choose three.)",
+    "options": [
+      "technologies",
+      "Internet connection",
+      "processes",
+      "data center",
+      "people",
+      "database engine"
+    ],
+    "answer": "technologies",
+    "category": "Checkpoint Exam: Threat Actors and Defenders Group Exam",
+    "sourceDoc": "checkpoint_1.docx"
+  },
+  {
+    "id": "checkpoint_1_9",
+    "question": "Which KPI metric does SOAR use to measure the time required to stop the spread of malware in the network?",
+    "options": [
+      "MITR",
+      "Time to Control",
+      "MITC",
+      "MTTD"
+    ],
+    "answer": "Time to Control",
+    "category": "Checkpoint Exam: Threat Actors and Defenders Group Exam",
+    "sourceDoc": "checkpoint_1.docx"
+  },
+  {
+    "id": "checkpoint_1_10",
+    "question": "What job would require verification that an alert represents a true security incident or a false positive?",
+    "options": [
+      "Alert Analyst",
+      "Threat Hunter",
+      "SOC Manager",
+      "Incident Reporter"
+    ],
+    "answer": "Alert Analyst",
+    "category": "Checkpoint Exam: Threat Actors and Defenders Group Exam",
+    "sourceDoc": "checkpoint_1.docx"
+  },
+  {
+    "id": "checkpoint_1_11",
+    "question": "When a user turns on the PC on Wednesday, the PC displays a message indicating that all of the user files have been locked. In order to get the files unencrypted, the user is supposed to send an email and include a specific ID in the email title. The message also includes ways to buy and submit bitcoins as payment for the file decryption. After inspecting the message, the technician suspects a security breach occurred. What type of malware could be responsible?",
+    "options": [
+      "Trojan",
+      "spyware",
+      "adware",
+      "ransomware"
+    ],
+    "answer": "ransomware",
+    "category": "Checkpoint Exam: Threat Actors and Defenders Group Exam",
+    "sourceDoc": "checkpoint_1.docx"
+  },
+  {
+    "id": "checkpoint_1_12",
+    "question": "An employee connects wirelessly to the company network using a cell phone. The employee then configures the cell phone to act as a wireless access point that will allow new employees to connect to the company network. Which type of security threat best describes this situation?",
+    "options": [
+      "rogue access point",
+      "cracking",
+      "spoofing",
+      "denial of service"
+    ],
+    "answer": "rogue access point",
+    "category": "Checkpoint Exam: Threat Actors and Defenders Group Exam",
+    "sourceDoc": "checkpoint_1.docx"
+  },
+  {
+    "id": "checkpoint_1_13",
+    "question": "What are two examples of personally identifiable information (PII)? (Choose two.)",
+    "options": [
+      "first name",
+      "IP address",
+      "language preference",
+      "street address",
+      "credit card number"
+    ],
+    "answer": "IP address",
+    "category": "Checkpoint Exam: Threat Actors and Defenders Group Exam",
+    "sourceDoc": "checkpoint_1.docx"
+  },
+  {
+    "id": "checkpoint_1_14",
+    "question": "What is the dark web?",
+    "options": [
+      "It is a website that reports the most recent activities of cybercriminals all over the world.",
+      "It is a website that sells stolen credit cards.",
+      "It is part of the internet where a person can obtain personally identifiable information from anyone for free",
+      "It is part of the internet that can only be accessed with special software."
+    ],
+    "answer": "It is part of the internet that can only be accessed with special software.",
+    "category": "Checkpoint Exam: Threat Actors and Defenders Group Exam",
+    "sourceDoc": "checkpoint_1.docx"
+  },
+  {
+    "id": "checkpoint_1_15",
+    "question": "A company has just had a cybersecurity incident. The threat actor appeared to have a goal of network disruption and appeared to use a common security hack tool that overwhelmed a particular server with a large amount of traffic. This traffic rendered the server inoperable. How would a certified cybersecurity analyst classify this type of threat actor?",
+    "options": [
+      "terrorist",
+      "hacktivist",
+      "state-sponsored",
+      "amateur"
+    ],
+    "answer": "terrorist",
+    "category": "Checkpoint Exam: Threat Actors and Defenders Group Exam",
+    "sourceDoc": "checkpoint_1.docx"
+  },
+  {
+    "id": "checkpoint_1_16",
+    "question": "A user calls the help desk complaining that the password to access the wireless network has changed without warning. The user is allowed to change the password, but an hour later, the same thing occurs. What might be happening in this situation?",
+    "options": [
+      "rogue access point",
+      "password policy",
+      "weak password",
+      "user error",
+      "user laptop"
+    ],
+    "answer": "rogue access point",
+    "category": "Checkpoint Exam: Threat Actors and Defenders Group Exam",
+    "sourceDoc": "checkpoint_1.docx"
+  },
+  {
+    "id": "checkpoint_1_17",
+    "question": "Which regulatory law regulates the identification, storage, and transmission of patient personal healthcare information?",
+    "options": [
+      "FISMA",
+      "HIPAA",
+      "PCI-DSS",
+      "GLBA"
+    ],
+    "answer": "HIPAA",
+    "category": "Checkpoint Exam: Threat Actors and Defenders Group Exam",
+    "sourceDoc": "checkpoint_1.docx"
+  },
+  {
+    "id": "checkpoint_1_18",
+    "question": "A worker in the records department of a hospital accidentally sends a medical record of a patient to a printer in another department. When the worker arrives at the printer, the patient record printout is missing. What breach of confidentiality does this situation describe?",
+    "options": [
+      "EMR",
+      "PII",
+      "PSI",
+      "PHI"
+    ],
+    "answer": "EMR",
+    "category": "Checkpoint Exam: Threat Actors and Defenders Group Exam",
+    "sourceDoc": "checkpoint_1.docx"
+  },
+  {
+    "id": "checkpoint_1_19",
+    "question": "What type of cyberwarfare weapon was Stuxnet?",
+    "options": [
+      "botnet",
+      "virus",
+      "worm",
+      "ransomware"
+    ],
+    "answer": "worm",
+    "category": "Checkpoint Exam: Threat Actors and Defenders Group Exam",
+    "sourceDoc": "checkpoint_1.docx"
+  },
+  {
+    "id": "checkpoint_1_20",
+    "question": "Which example illustrates how malware might be concealed?",
+    "options": [
+      "A hacker uses techniques to improve the ranking of a website so that users are redirected to a malicious site.",
+      "An attack is launched against the public website of an online retailer with the objective of blocking its response to visitors.",
+      "A botnet of zombies carry personal information back to the hacker.",
+      "An email is sent to the employees of an organization with an attachment that looks like an antivirus update, but the attachment actually consists of spyware."
+    ],
+    "answer": "A hacker uses techniques to improve the ranking of a website so that users are redirected to a malicious site.",
+    "category": "Checkpoint Exam: Threat Actors and Defenders Group Exam",
+    "sourceDoc": "checkpoint_1.docx"
+  },
+  {
+    "id": "checkpoint_1_21",
+    "question": "What websites should a user avoid when connecting to a free and open wireless hotspot?",
+    "options": [
+      "websites to check account fees",
+      "websites to check product details",
+      "websites to check stock prices",
+      "websites to make purchases"
+    ],
+    "answer": "websites to check account fees",
+    "category": "Checkpoint Exam: Threat Actors and Defenders Group Exam",
+    "sourceDoc": "checkpoint_1.docx"
+  },
+  {
+    "id": "checkpoint_1_22",
+    "question": "In a smart home, an owner has connected many home devices to the Internet, such as the refrigerator and the coffee maker. The owner is concerned that these devices will make the wireless network vulnerable to attacks. What action could be taken to address this issue?",
+    "options": [
+      "Configure mixed mode wireless operation.",
+      "Install the latest firmware versions for the devices.",
+      "Assign static IP addresses to the wireless devices.",
+      "Disable the SSID broadcast."
+    ],
+    "answer": "Install the latest firmware versions for the devices.",
+    "category": "Checkpoint Exam: Threat Actors and Defenders Group Exam",
+    "sourceDoc": "checkpoint_1.docx"
+  },
+  {
+    "id": "checkpoint_1_23",
+    "question": "Match the SOC metric to the description. (Not all options are used.)",
+    "options": [],
+    "answer": "N/A",
+    "category": "Checkpoint Exam: Threat Actors and Defenders Group Exam",
+    "sourceDoc": "checkpoint_1.docx"
+  },
+  {
+    "id": "checkpoint_1_24",
+    "question": "A group of users on the same network are all complaining about their computers running slowly. After investigating, the technician determines that these computers are part of a zombie network. Which type of malware is used to control these computers?",
+    "options": [
+      "botnet",
+      "spyware",
+      "virus",
+      "rootkit"
+    ],
+    "answer": "botnet",
+    "category": "Checkpoint Exam: Threat Actors and Defenders Group Exam",
+    "sourceDoc": "checkpoint_1.docx"
+  },
+  {
+    "id": "checkpoint_1_25",
+    "question": "Which statement describes cyberwarfare?",
+    "options": [
+      "It is Internet-based conflict that involves the penetration of information systems of other nations.",
+      "It is simulation software for Air Force pilots that allows them to practice under a simulated war scenario.",
+      "Cyberwarfare is an attack carried out by a group of script kiddies.",
+      "It is a series of personal protective equipment developed for soldiers involved in nuclear war"
+    ],
+    "answer": "It is Internet-based conflict that involves the penetration of information systems of other nations.",
+    "category": "Checkpoint Exam: Threat Actors and Defenders Group Exam",
+    "sourceDoc": "checkpoint_1.docx"
+  },
+  {
+    "id": "checkpoint_1_26",
+    "question": "Why do IoT devices pose a greater risk than other computing devices on a network?",
+    "options": [
+      "Most IoT devices do not receive frequent firmware updates.",
+      "Most IoT devices do not require an Internet connection and are unable to receive new updates.",
+      "IoT devices cannot function on an isolated network with only an Internet connection.",
+      "IoT devices require unencrypted wireless connections."
+    ],
+    "answer": "Most IoT devices do not receive frequent firmware updates.",
+    "category": "Checkpoint Exam: Threat Actors and Defenders Group Exam",
+    "sourceDoc": "checkpoint_1.docx"
+  },
+  {
+    "id": "checkpoint_1_27",
+    "question": "Which cyber attack involves a coordinated attack from a botnet of zombie computers?",
+    "options": [
+      "DDoS",
+      "MITM",
+      "address spoofing",
+      "ICMP redirect"
+    ],
+    "answer": "DDoS",
+    "category": "Checkpoint Exam: Threat Actors and Defenders Group Exam",
+    "sourceDoc": "checkpoint_1.docx"
+  },
+  {
+    "id": "checkpoint_1_28",
+    "question": "What is the main purpose of cyberwarfare?",
+    "options": [
+      "to protect cloud-based data centers",
+      "to develop advanced network devices",
+      "to gain advantage over adversaries",
+      "to simulate possible war scenarios among nations"
+    ],
+    "answer": "to gain advantage over adversaries",
+    "category": "Checkpoint Exam: Threat Actors and Defenders Group Exam",
+    "sourceDoc": "checkpoint_1.docx"
+  }
+]

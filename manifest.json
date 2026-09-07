@@ -53,7 +53,8 @@
     {
       "resources": [
         "assets/lib/mammoth.min.js",
-        "assets/icons/*"
+        "assets/icons/*",
+        "docs/*"
       ],
       "matches": [
         "<all_urls>"
