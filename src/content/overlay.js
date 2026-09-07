@@ -1,11 +1,13 @@
 /**
- * Chromy 2 - Floating Overlay & Highlighting UI
+ * Chromy 2 - Single Top-Window Floating Overlay UI
  * Strict 60-30-10 Palette: Black (60%), Dark Charcoal (30%), Vibrant Orange & White (10%).
- * Clean minimal header without status badge tag. SVGs only, no emojis, no hover glow.
+ * Renders ONLY ONE single floating overlay widget per tab (no duplicate iframe overlays).
  */
 
 (function () {
   if (window.MyBuddyOverlay) return;
+
+  const isTopWindow = window === window.top;
 
   const SVG_ICONS = {
     shield: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>`,
@@ -24,10 +26,13 @@
       this.isMinimized = false;
       this.currentMatchData = null;
       this.onScanRequested = null;
+      this.isTop = isTopWindow;
       this.init();
     }
 
     init() {
+      // If inside an iframe, do NOT render UI DOM elements, just act as proxy handler
+      if (!this.isTop) return;
       if (document.getElementById('my-buddy-overlay-root')) return;
 
       const root = document.createElement('div');
@@ -57,7 +62,7 @@
           <div class="mb-section mb-matched-answer">
             <div class="mb-label-group">
               <span class="mb-label">${SVG_ICONS.check} MATCHED ANSWER</span>
-              <span class="mb-confidence-badge" id="mb-confidence">0% Match</span>
+              <span class="mb-confidence-badge" id="mb-confidence" style="display:none;">0% Match</span>
             </div>
             <div class="mb-answer-box" id="mb-a-box">
               <div class="mb-answer-text" id="mb-a-text">Upload your exam .docx documents in the extension popup to get instant answers.</div>
@@ -80,6 +85,8 @@
     }
 
     bindEvents() {
+      if (!this.container) return;
+
       const toggleBtn = this.container.querySelector('#mb-btn-toggle');
       const scanBtn = this.container.querySelector('#mb-btn-scan');
       const highlightBtn = this.container.querySelector('#mb-btn-highlight');
@@ -113,6 +120,7 @@
     }
 
     makeDraggable() {
+      if (!this.container) return;
       const handle = this.container.querySelector('#my-buddy-drag-handle');
       let isDragging = false;
       let startX, startY, initialLeft, initialTop;
@@ -147,12 +155,17 @@
     }
 
     updateDetectedQuestion(text) {
+      if (!this.container) return;
       const qText = this.container.querySelector('#mb-q-text');
-      qText.textContent = text || 'Scanning page...';
+      if (qText) {
+        qText.textContent = text || 'Scanning page...';
+      }
     }
 
     updateMatchResult(result) {
       this.currentMatchData = result;
+
+      if (!this.container) return;
 
       const confidence = this.container.querySelector('#mb-confidence');
       const aText = this.container.querySelector('#mb-a-text');
@@ -169,7 +182,7 @@
         highlightBtn.disabled = false;
         highlightBtn.style.opacity = '1';
 
-        if (result.score >= 80) {
+        if (result.score >= 70) {
           this.highlightOptionOnPage();
         }
       } else {
@@ -191,11 +204,11 @@
       if (!this.currentMatchData || !this.currentMatchData.answer) return;
 
       const answerText = this.currentMatchData.answer.toLowerCase().trim();
-      const options = Array.from(document.querySelectorAll('label, [role="radio"], [role="checkbox"], .subModuleContainer--D82xI, li, .nodeContainer--3DQo1'));
+      const options = Array.from(document.querySelectorAll('label, [role="radio"], [role="checkbox"], .subModuleContainer--D82xI, li, .nodeContainer--3DQo1, span, p'));
 
       options.forEach(el => {
         const text = (el.innerText || '').toLowerCase().trim();
-        if (text && (text.includes(answerText) || answerText.includes(text))) {
+        if (text && text.length > 3 && (text.includes(answerText) || answerText.includes(text))) {
           el.classList.add('my-buddy-highlighted-choice');
           el.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
