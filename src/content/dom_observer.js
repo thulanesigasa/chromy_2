@@ -1,6 +1,6 @@
 /**
- * My Buddy - Webpage Question & Module Extractor Observer
- * Intelligent DOM scanner tuned for Cisco NetAcad, CyberOps, SkillsForAll, and generic quiz LMS sites.
+ * Chromy 2 - Bulletproof Webpage Question & Option Extractor Observer
+ * Tuned for Cisco NetAcad, CyberOps Associate, SkillsForAll, and all standard LMS quiz platforms.
  */
 
 (function () {
@@ -28,6 +28,7 @@
       });
 
       window.addEventListener('popstate', () => this.scanPage(true));
+      window.addEventListener('hashchange', () => this.scanPage(true));
     }
 
     stop() {
@@ -37,92 +38,126 @@
     }
 
     detectActiveModuleCategory() {
-      // 1. Look for Cisco NetAcad / CyberOps active module nodes
-      const activeModuleNode = document.querySelector('.nodeContainer--3DQo1.nodeSubSectionActive--EJiXb .nodeName--AZrtx, .outlineContainer--m04EY .active .nodeName--AZrtx, .courseTitle--zMkHL');
-      if (activeModuleNode && activeModuleNode.innerText) {
-        return activeModuleNode.innerText.trim();
+      // 1. Cisco NetAcad / Checkpoint Exam title selectors
+      const titleSelectors = [
+        '.nodeContainer--3DQo1.nodeSubSectionActive--EJiXb .nodeName--AZrtx',
+        '.outlineContainer--m04EY .active .nodeName--AZrtx',
+        '.courseTitle--zMkHL',
+        'header .title',
+        'h1', 'h2',
+        '.active--KiHs6',
+        '[aria-selected="true"]'
+      ];
+
+      for (const sel of titleSelectors) {
+        const el = document.querySelector(sel);
+        if (el && el.innerText && el.innerText.trim().length > 3) {
+          const txt = el.innerText.trim();
+          if (!txt.toLowerCase().includes('question')) {
+            return txt;
+          }
+        }
       }
 
-      // 2. Look for active tab or exam headings
-      const headingNode = document.querySelector('h1, h2, .active--KiHs6, [aria-selected="true"]');
-      if (headingNode && headingNode.innerText) {
-        return headingNode.innerText.trim();
-      }
-
-      return 'General';
+      return 'Checkpoint Exam';
     }
 
-    findQuestionElements() {
-      const candidates = Array.from(document.querySelectorAll('h1, h2, h3, h4, h5, h6, p, span, div, li')).filter(el => {
-        // Ignore elements inside My Buddy UI widget
+    extractPageQuestionAndOptions() {
+      let detectedQuestion = '';
+      const detectedOptions = [];
+
+      // 1. Query candidate text elements across DOM
+      const allTextNodes = Array.from(
+        document.querySelectorAll('h1, h2, h3, h4, h5, h6, p, div, span, label, [class*="question"], [class*="Question"], [class*="prompt"]')
+      ).filter(el => {
         if (el.closest('#my-buddy-overlay-root')) return false;
 
         const text = (el.innerText || '').trim();
-        if (text.length < 8 || text.length > 600) return false;
+        if (text.length < 5 || text.length > 800) return false;
+
+        // Skip standard navigation buttons & footer text
+        if (el.closest('button, nav, footer, [role="navigation"]')) return false;
 
         const textLower = text.toLowerCase();
-
-        // Filter out navigation/menu buttons and breadcrumbs
-        const navBlacklist = ['next', 'previous', 'submit', 'quit', 'exit', 'menu', 'nav', 'navigation', 'back', 'skip', 'continue', 'skip question', 'search course outline'];
+        const navBlacklist = ['skip all', 'skip question', 'submit', 'next', 'previous', 'quit', 'menu', 'search course outline'];
         if (navBlacklist.includes(textLower)) return false;
-
-        if (el.closest('button, a, nav, footer, [role="button"], [role="tab"], [role="navigation"]')) {
-          return false;
-        }
-
-        // Fast track: Check if text resembles a question
-        const isQuestionPattern = text.endsWith('?') || /^(which|what|why|how|when|where|who|select|choose|identify|match|true|false)\b/i.test(text);
-
-        if (!isQuestionPattern) {
-          // Exclude input options
-          if (el.closest('input, label, [role="radio"], [role="checkbox"], [role="option"]')) {
-            return false;
-          }
-        }
 
         return true;
       });
 
-      // Filter out containers that enclose smaller question candidates
-      return candidates.filter(el => {
-        return !candidates.some(other => el !== other && el.contains(other));
+      // Priority 1: Elements ending with '?'
+      const questionMarkElements = allTextNodes.filter(el => {
+        const txt = (el.innerText || '').trim();
+        return txt.endsWith('?') && !txt.toLowerCase().startsWith('select a space');
       });
-    }
 
-    scanPage(force = false) {
-      const candidates = this.findQuestionElements();
-      let bestMatchText = '';
+      if (questionMarkElements.length > 0) {
+        // Pick shortest text node containing question mark to avoid giant wrapper containers
+        questionMarkElements.sort((a, b) => (a.innerText || '').trim().length - (b.innerText || '').trim().length);
+        detectedQuestion = (questionMarkElements[0].innerText || '').trim();
+      }
 
-      if (candidates.length > 0) {
-        // 1. Highest priority: ends with '?'
-        let bestEl = candidates.find(c => (c.innerText || '').trim().endsWith('?'));
+      // Priority 2: Elements starting with question words
+      if (!detectedQuestion) {
+        const questionWordElements = allTextNodes.filter(el => {
+          const txt = (el.innerText || '').trim();
+          return /^(which|what|why|how|when|where|who|select|choose|identify|match|true|false)\b/i.test(txt);
+        });
 
-        // 2. Second priority: starts with question keywords
-        if (!bestEl) {
-          bestEl = candidates.find(c =>
-            /^(which|what|why|how|when|where|who|select|choose|identify|match|true|false)\b/i.test((c.innerText || '').trim())
-          );
-        }
-
-        // 3. Fallback: contains question mark
-        if (!bestEl) {
-          bestEl = candidates.find(c => (c.innerText || '').includes('?'));
-        }
-
-        if (bestEl) {
-          bestMatchText = (bestEl.innerText || '').trim();
+        if (questionWordElements.length > 0) {
+          questionWordElements.sort((a, b) => (a.innerText || '').trim().length - (b.innerText || '').trim().length);
+          detectedQuestion = (questionWordElements[0].innerText || '').trim();
         }
       }
 
+      // Priority 3: Question heading siblings
+      if (!detectedQuestion) {
+        const questionHeadings = Array.from(document.querySelectorAll('h1, h2, h3, h4, [class*="Question"], [class*="question"]'))
+          .filter(el => !el.closest('#my-buddy-overlay-root') && /^question\s*\d+/i.test((el.innerText || '').trim()));
+
+        if (questionHeadings.length > 0) {
+          const heading = questionHeadings[0];
+          let sibling = heading.nextElementSibling;
+          while (sibling) {
+            const txt = (sibling.innerText || '').trim();
+            if (txt.length > 5 && !txt.toLowerCase().includes('submit')) {
+              detectedQuestion = txt;
+              break;
+            }
+            sibling = sibling.nextElementSibling;
+          }
+        }
+      }
+
+      // Extract option choices from page
+      const optionElements = document.querySelectorAll('label, [role="radio"], [role="checkbox"], .option, .choice, li');
+      optionElements.forEach(el => {
+        if (!el.closest('#my-buddy-overlay-root')) {
+          const txt = (el.innerText || '').trim();
+          if (txt.length > 2 && txt.length < 300 && !detectedOptions.includes(txt)) {
+            detectedOptions.push(txt);
+          }
+        }
+      });
+
+      return {
+        questionText: detectedQuestion,
+        options: detectedOptions
+      };
+    }
+
+    scanPage(force = false) {
+      const { questionText, options } = this.extractPageQuestionAndOptions();
       const activeCategory = this.detectActiveModuleCategory();
 
-      if (force || bestMatchText !== this.lastQuestionText || activeCategory !== this.lastCategoryText) {
-        this.lastQuestionText = bestMatchText;
+      if (force || questionText !== this.lastQuestionText || activeCategory !== this.lastCategoryText) {
+        this.lastQuestionText = questionText;
         this.lastCategoryText = activeCategory;
 
-        if (this.onQuestionDetected && bestMatchText) {
+        if (this.onQuestionDetected && (questionText || options.length > 0)) {
           this.onQuestionDetected({
-            questionText: bestMatchText,
+            questionText: questionText || 'Question detected',
+            options: options,
             category: activeCategory
           });
         }

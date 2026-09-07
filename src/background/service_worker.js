@@ -42,11 +42,12 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       const matchResult = findBestMatch(
         request.question,
         kbEntries,
-        request.category || null
+        request.category || null,
+        request.options || []
       );
       sendResponse(matchResult);
     });
-    return true; // Keep response channel open for async response
+    return true;
   }
 
   if (request.action === 'save_document') {
