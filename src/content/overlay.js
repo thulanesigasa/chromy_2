@@ -158,7 +158,14 @@
       if (!this.container) return;
       const qText = this.container.querySelector('#mb-q-text');
       if (qText) {
-        qText.textContent = text || 'Scanning page...';
+        // Validate: only show text that looks like a real question or statement
+        // (not sidebar nav text, not just one or two words)
+        const looksLikeQuestion = text &&
+          text.length > 10 &&
+          (text.endsWith('?') ||
+           /^(which|what|why|how|when|where|who|select|choose|identify|match|true|false|an|a |the )/i.test(text.trim()));
+
+        qText.textContent = looksLikeQuestion ? text : 'Scanning for question...';
       }
     }
 

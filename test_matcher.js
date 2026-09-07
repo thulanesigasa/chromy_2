@@ -51,10 +51,26 @@ const tests = [
     expectedAnswer: 'SOAR automates incident investigation and responds to workflows based on playbooks.'
   },
   {
-    label: 'Q11: Ransomware question — long question, option fallback',
+    label: 'Q14: "What is the dark web?" — options only, no question (sidebar noise replaced by empty)',
     question: '',
-    options: ['Trojan', 'spyware', 'adware', 'ransomware'],
-    expectedAnswer: 'ransomware'
+    options: [
+      'It is part of the internet that can only be accessed with special software.',
+      'It is a website that sells stolen credit cards.',
+      'It is a website that reports the most recent activities of cybercriminals all over the world.',
+      'It is part of the internet where a person can obtain personally identifiable information from anyone for free'
+    ],
+    expectedAnswer: 'It is part of the internet that can only be accessed with special software.'
+  },
+  {
+    label: 'Q14: "What is the dark web?" — SIDEBAR NOISE as question text (the actual bug)',
+    question: 'Select a space to start the conversation',
+    options: [
+      'It is part of the internet that can only be accessed with special software.',
+      'It is a website that sells stolen credit cards.',
+      'It is a website that reports the most recent activities of cybercriminals all over the world.',
+      'It is part of the internet where a person can obtain personally identifiable information from anyone for free'
+    ],
+    expectedAnswer: 'It is part of the internet that can only be accessed with special software.'
   },
   {
     label: 'Q27: DDoS question (question only, no options)',

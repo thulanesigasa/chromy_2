@@ -97,21 +97,31 @@ function calculateOptionSetScore(pageOptions, kbOptions) {
 
   pageOptions.forEach(pOpt => {
     const normPOpt = normalizeText(pOpt);
-    if (normPOpt.length < 3) return;
+    if (normPOpt.length === 0) return;
 
     kbOptions.forEach(kOpt => {
       const normKOpt = normalizeText(kOpt);
-      if (normKOpt.length < 3) return;
+      if (normKOpt.length === 0) return;
 
-      // Exact containment match
-      if (normKOpt.includes(normPOpt) || normPOpt.includes(normKOpt)) {
-        optionMatches++;
-        return;
+      // Short option exact match (e.g. "DDoS", "HIPAA", "ransomware")
+      if (normPOpt.length <= 15 && normKOpt.length <= 15) {
+        if (normPOpt === normKOpt) {
+          optionMatches++;
+          return;
+        }
       }
 
-      // High Jaccard similarity between the individual option strings (> 0.7)
+      // Exact containment match for longer options
+      if (normPOpt.length > 5 && normKOpt.length > 5) {
+        if (normKOpt.includes(normPOpt) || normPOpt.includes(normKOpt)) {
+          optionMatches++;
+          return;
+        }
+      }
+
+      // High Jaccard similarity between individual option strings
       const j = calculateJaccardSimilarity(pOpt, kOpt);
-      if (j >= 0.7) {
+      if (j >= 0.65) {
         optionMatches++;
       }
     });
@@ -132,10 +142,9 @@ function computeMatchScore(pageQuestionText, kbQuestionText, pageOptions = [], k
   if (!hasPageQuestion && pageOptions.length >= 2) {
     const optScore = calculateOptionSetScore(pageOptions, kbOptions);
     if (optScore >= 0.5) {
-      // Treat high option overlap as high confidence (options are unique per question)
       return 0.75 + (optScore * 0.25); // max 1.0
     }
-    return optScore * 0.5; // low confidence
+    return optScore * 0.5;
   }
 
   // ── Question text matching ───────────────────────────────────────────────────
@@ -164,15 +173,23 @@ function computeMatchScore(pageQuestionText, kbQuestionText, pageOptions = [], k
     }
   }
 
-  // 4. Option set similarity boost
+  // 4. Option set similarity score
   const optScore = calculateOptionSetScore(pageOptions, kbOptions);
+
+  // 4a. Options OVERRIDE: if the question text appears to be sidebar/nav noise
+  //     (qScore very low < 0.30) but options strongly match (>= 0.60), trust options alone.
+  //     This handles cases where a wrong string is sent as question text.
+  if (optScore >= 0.60 && qScore < 0.30) {
+    return 0.75 + (optScore * 0.25); // max 1.0, same as options-only path
+  }
+
+  // 4b. Options BOOST: strong option overlap pushes score up
   if (optScore >= 0.5) {
-    // Options strongly suggest the right entry — boost score significantly
     const boosted = Math.max(qScore, 0.80 + (optScore * 0.20));
     return boosted;
   }
 
-  // 5. Partial option boost even if question score was decent
+  // 5. Partial option boost when both have moderate scores
   if (optScore > 0.2 && qScore > 0.2) {
     qScore = qScore + (optScore * 0.15);
   }
