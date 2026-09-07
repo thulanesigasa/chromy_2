@@ -65,8 +65,21 @@
     }
 
     isCookieOrPrivacyText(text) {
-      const textLower = text.toLowerCase();
-      const blacklistTerms = [
+      const textLower = text.toLowerCase().trim();
+
+      // Exact-match blacklist for known noise strings
+      const exactBlacklist = [
+        'question 1', 'question 2', 'question 3', 'question 4', 'question 5',
+        'question 6', 'question 7', 'question 8', 'question 9', 'question 10',
+        'question 11', 'question 12', 'question 13', 'question 14', 'question 15',
+        'question 16', 'question 17', 'question 18', 'question 19', 'question 20',
+        'q1', 'q2', 'q3', 'q4', 'q5', 'q6', 'q7', 'q8', 'q9', 'q10',
+        'skip all', 'skip question', 'skip to content'
+      ];
+      if (exactBlacklist.some(term => textLower === term)) return true;
+
+      // Substring blacklist for sidebar/navigation/cookie noise
+      const substringBlacklist = [
         'when you visit any website',
         'store or retrieve information',
         'form of cookies',
@@ -75,17 +88,29 @@
         'cookie preferences',
         'manage preferences',
         'select a space',
-        'skip to',
-        'skip question',
+        'select a space to start',
+        'start the conversation',
         'search course outline',
-        'skip all',
-        'question 1', 'question 2', 'question 3', 'question 4', 'question 5',
-        'question 6', 'question 7', 'question 8', 'question 9', 'question 10',
-        'question 11', 'question 12', 'question 13', 'question 14', 'question 15',
-        'question 16', 'question 17', 'question 18', 'question 19', 'question 20'
+        'course outline',
+        'skip to',
+        'sign in',
+        'log in',
+        'log out',
+        'my knowledge check',
+        'resources',
+        'next question',
+        'previous question',
+        'submit answer',
+        'of 20 questions',
+        'of 10 questions',
+        'of 15 questions',
+        'question feedback',
+        'answer feedback',
+        'incorrect answer',
+        'correct answer'
       ];
 
-      return blacklistTerms.some(term => textLower === term.toLowerCase() || textLower.trim() === term.trim());
+      return substringBlacklist.some(term => textLower.includes(term));
     }
 
     /**
