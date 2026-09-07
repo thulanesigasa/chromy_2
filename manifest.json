@@ -45,6 +45,10 @@
     },
     "default_title": "Chromy 2 Assistant"
   },
+  "options_ui": {
+    "page": "src/options/options.html",
+    "open_in_tab": true
+  },
   "web_accessible_resources": [
     {
       "resources": [

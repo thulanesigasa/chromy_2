@@ -1,20 +1,21 @@
 /**
- * My Buddy - Floating Overlay & Highlighting UI
- * Strictly observes 60-30-10 color rule, inline SVGs (no emojis), and clean non-glow micro-interactions.
+ * Chromy 2 - Floating Overlay & Highlighting UI
+ * Strict 60-30-10 Palette: Black (60%), Dark Charcoal (30%), Vibrant Orange & White (10%).
+ * Uses inline SVGs only, no emojis, no hover glow.
  */
 
 (function () {
   if (window.MyBuddyOverlay) return;
 
   const SVG_ICONS = {
-    shield: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>`,
-    document: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>`,
-    target: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>`,
-    check: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`,
-    refresh: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>`,
-    minimize: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>`,
-    maximize: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>`,
-    help: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`
+    shield: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>`,
+    document: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#a1a1aa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>`,
+    target: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>`,
+    check: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`,
+    checkWhite: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`,
+    refresh: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#a1a1aa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>`,
+    minimize: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#a1a1aa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>`,
+    maximize: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#a1a1aa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>`
   };
 
   class OverlayUI {
@@ -50,13 +51,13 @@
 
         <div class="my-buddy-body" id="my-buddy-body-content">
           <div class="mb-section mb-detected-question">
-            <div class="mb-label">${SVG_ICONS.target} Detected Question</div>
+            <div class="mb-label">${SVG_ICONS.target} DETECTED QUESTION</div>
             <div class="mb-text" id="mb-q-text">Detecting active question on page...</div>
           </div>
 
           <div class="mb-section mb-matched-answer">
             <div class="mb-label-group">
-              <span class="mb-label">${SVG_ICONS.check} Matched Answer</span>
+              <span class="mb-label">${SVG_ICONS.check} MATCHED ANSWER</span>
               <span class="mb-confidence-badge" id="mb-confidence">0% Match</span>
             </div>
             <div class="mb-answer-box" id="mb-a-box">
@@ -65,9 +66,9 @@
           </div>
 
           <div class="mb-footer">
-            <div class="mb-meta" id="mb-doc-meta">${SVG_ICONS.document} No document active</div>
+            <div class="mb-meta" id="mb-doc-meta">${SVG_ICONS.document} No active document match</div>
             <button class="mb-btn-primary" id="mb-btn-highlight">
-              ${SVG_ICONS.check} Highlight Option
+              ${SVG_ICONS.checkWhite} Highlight Option
             </button>
           </div>
         </div>
@@ -161,24 +162,23 @@
       const highlightBtn = this.container.querySelector('#mb-btn-highlight');
 
       if (result.matchFound) {
-        badge.textContent = result.score >= 90 ? 'Exact Match' : 'Fuzzy Match';
+        badge.textContent = result.score >= 90 ? 'EXACT MATCH' : 'FUZZY MATCH';
         badge.className = `my-buddy-badge ${result.score >= 90 ? 'badge-exact' : 'badge-fuzzy'}`;
 
-        confidence.textContent = `${result.score}% Match`;
+        confidence.textContent = `${result.score}% MATCH`;
         confidence.style.display = 'inline-block';
 
         aText.innerHTML = `<strong>Answer:</strong> ${this.escapeHtml(result.answer)}`;
-        docMeta.innerHTML = `${SVG_ICONS.document} ${this.escapeHtml(result.sourceDoc)} (${this.escapeHtml(result.category)})`;
+        docMeta.innerHTML = `${SVG_ICONS.document} ${this.escapeHtml(result.sourceDoc)}`;
 
         highlightBtn.disabled = false;
         highlightBtn.style.opacity = '1';
 
-        // Auto highlight if confidence > 80%
         if (result.score >= 80) {
           this.highlightOptionOnPage();
         }
       } else {
-        badge.textContent = 'No Match';
+        badge.textContent = 'NO MATCH';
         badge.className = 'my-buddy-badge badge-none';
 
         confidence.style.display = 'none';
@@ -191,7 +191,7 @@
 
         docMeta.innerHTML = `${SVG_ICONS.document} No active document match`;
         highlightBtn.disabled = true;
-        highlightBtn.style.opacity = '0.5';
+        highlightBtn.style.opacity = '0.4';
       }
     }
 
