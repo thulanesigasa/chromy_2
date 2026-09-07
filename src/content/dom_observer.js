@@ -1,6 +1,6 @@
 /**
- * Chromy 2 - Bulletproof Webpage Question & Option Extractor Observer
- * Tuned for Cisco NetAcad, CyberOps Associate, SkillsForAll, and all standard LMS quiz platforms.
+ * Chromy 2 - Bulletproof DOM Question & Option Extractor
+ * Tuned for Cisco NetAcad, CyberOps Associate, SkillsForAll, and LMS quiz platforms.
  */
 
 (function () {
@@ -38,15 +38,12 @@
     }
 
     detectActiveModuleCategory() {
-      // 1. Cisco NetAcad / Checkpoint Exam title selectors
       const titleSelectors = [
         '.nodeContainer--3DQo1.nodeSubSectionActive--EJiXb .nodeName--AZrtx',
         '.outlineContainer--m04EY .active .nodeName--AZrtx',
         '.courseTitle--zMkHL',
         'header .title',
-        'h1', 'h2',
-        '.active--KiHs6',
-        '[aria-selected="true"]'
+        'h1', 'h2'
       ];
 
       for (const sel of titleSelectors) {
@@ -70,17 +67,25 @@
       const allTextNodes = Array.from(
         document.querySelectorAll('h1, h2, h3, h4, h5, h6, p, div, span, label, [class*="question"], [class*="Question"], [class*="prompt"]')
       ).filter(el => {
-        if (el.closest('#my-buddy-overlay-root')) return false;
+        if (el.closest('#my-buddy-overlay-root, #skiplinks, .skiplinks, .skipLinkList')) return false;
 
         const text = (el.innerText || '').trim();
-        if (text.length < 5 || text.length > 800) return false;
+        if (text.length < 6 || text.length > 800) return false;
 
-        // Skip standard navigation buttons & footer text
-        if (el.closest('button, nav, footer, [role="navigation"]')) return false;
-
+        // Blacklist accessibility skiplinks and navigation buttons
         const textLower = text.toLowerCase();
-        const navBlacklist = ['skip all', 'skip question', 'submit', 'next', 'previous', 'quit', 'menu', 'search course outline'];
-        if (navBlacklist.includes(textLower)) return false;
+        if (
+          textLower.includes('select a space') ||
+          textLower.includes('skip to') ||
+          textLower.includes('skip question') ||
+          textLower.includes('search course outline') ||
+          textLower === 'skip all' ||
+          textLower === 'submit'
+        ) {
+          return false;
+        }
+
+        if (el.closest('button, nav, footer, [role="navigation"]')) return false;
 
         return true;
       });
@@ -88,11 +93,10 @@
       // Priority 1: Elements ending with '?'
       const questionMarkElements = allTextNodes.filter(el => {
         const txt = (el.innerText || '').trim();
-        return txt.endsWith('?') && !txt.toLowerCase().startsWith('select a space');
+        return txt.endsWith('?') && !txt.toLowerCase().includes('select a space');
       });
 
       if (questionMarkElements.length > 0) {
-        // Pick shortest text node containing question mark to avoid giant wrapper containers
         questionMarkElements.sort((a, b) => (a.innerText || '').trim().length - (b.innerText || '').trim().length);
         detectedQuestion = (questionMarkElements[0].innerText || '').trim();
       }
@@ -101,7 +105,8 @@
       if (!detectedQuestion) {
         const questionWordElements = allTextNodes.filter(el => {
           const txt = (el.innerText || '').trim();
-          return /^(which|what|why|how|when|where|who|select|choose|identify|match|true|false)\b/i.test(txt);
+          return /^(which|what|why|how|when|where|who|select|choose|identify|match|true|false)\b/i.test(txt) &&
+                 !txt.toLowerCase().includes('select a space');
         });
 
         if (questionWordElements.length > 0) {
@@ -110,7 +115,7 @@
         }
       }
 
-      // Priority 3: Question heading siblings
+      // Priority 3: Sibling of Question Number Heading
       if (!detectedQuestion) {
         const questionHeadings = Array.from(document.querySelectorAll('h1, h2, h3, h4, [class*="Question"], [class*="question"]'))
           .filter(el => !el.closest('#my-buddy-overlay-root') && /^question\s*\d+/i.test((el.innerText || '').trim()));
@@ -120,7 +125,7 @@
           let sibling = heading.nextElementSibling;
           while (sibling) {
             const txt = (sibling.innerText || '').trim();
-            if (txt.length > 5 && !txt.toLowerCase().includes('submit')) {
+            if (txt.length > 5 && !txt.toLowerCase().includes('submit') && !txt.toLowerCase().includes('select a space')) {
               detectedQuestion = txt;
               break;
             }
