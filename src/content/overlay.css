@@ -1,0 +1,229 @@
+/* My Buddy Extension - 60-30-10 Design System Overlay CSS */
+
+#my-buddy-overlay-root {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  z-index: 2147483647; /* Maximum z-index */
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: #f8fafc;
+}
+
+.my-buddy-widget {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  width: 360px;
+  background-color: #0f172a; /* 60% Dominant Background */
+  border: 1px solid #334155;    /* 30% Secondary Border */
+  border-radius: 12px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  transition: width 0.2s ease, height 0.2s ease, border-color 0.2s ease;
+  user-select: none;
+}
+
+.my-buddy-widget.minimized {
+  width: 220px;
+}
+
+.my-buddy-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background-color: #1e293b; /* 30% Secondary Container */
+  border-bottom: 1px solid #334155;
+  cursor: move;
+}
+
+.my-buddy-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.my-buddy-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.my-buddy-title {
+  font-weight: 700;
+  font-size: 14px;
+  color: #f8fafc;
+  letter-spacing: -0.01em;
+}
+
+.my-buddy-badge {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 9999px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  background-color: #334155;
+  color: #94a3b8;
+}
+
+.my-buddy-badge.badge-exact {
+  background-color: rgba(16, 185, 129, 0.15);
+  color: #10b981; /* 10% Accent */
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.my-buddy-badge.badge-fuzzy {
+  background-color: rgba(59, 130, 246, 0.15);
+  color: #3b82f6;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.my-buddy-badge.badge-none {
+  background-color: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.my-buddy-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.mb-btn-icon {
+  background: none;
+  border: none;
+  padding: 4px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #94a3b8;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.mb-btn-icon:hover {
+  background-color: #334155;
+  color: #f8fafc;
+}
+
+.my-buddy-body {
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.mb-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.mb-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.mb-label-group {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mb-confidence-badge {
+  font-size: 10px;
+  font-weight: 700;
+  color: #10b981; /* 10% Accent */
+}
+
+.mb-text {
+  font-size: 12px;
+  line-height: 1.4;
+  color: #cbd5e1;
+  background-color: #1e293b;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid #334155;
+  max-height: 80px;
+  overflow-y: auto;
+}
+
+.mb-answer-box {
+  background-color: #1e293b;
+  border: 1px solid #334155;
+  border-left: 3px solid #10b981; /* 10% Accent left border */
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.mb-answer-text {
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: #f8fafc;
+  word-break: break-word;
+}
+
+.mb-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 4px;
+  pt-2;
+  border-top: 1px solid #1e293b;
+}
+
+.mb-meta {
+  font-size: 11px;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+}
+
+.mb-btn-primary {
+  background-color: #10b981; /* 10% Accent */
+  color: #0f172a;
+  border: none;
+  font-weight: 600;
+  font-size: 11px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: transform 0.15s ease, background-color 0.15s ease;
+}
+
+.mb-btn-primary:hover {
+  background-color: #059669;
+  transform: translateY(-1px);
+}
+
+.mb-btn-primary:active {
+  transform: translateY(0);
+}
+
+/* On-Page Highlighting Class */
+.my-buddy-highlighted-choice {
+  border: 2px solid #10b981 !important;
+  background-color: rgba(16, 185, 129, 0.12) !important;
+  border-radius: 6px !important;
+  transition: border-color 0.2s ease, background-color 0.2s ease !important;
+}

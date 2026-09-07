@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chromy 2 - Exam Assistant</title>
+  <link rel="stylesheet" href="popup.css">
+  <script src="../../assets/lib/mammoth.min.js"></script>
+</head>
+<body>
+  <div class="popup-container">
+    <!-- Header -->
+    <header class="popup-header">
+      <div class="brand">
+        <span class="icon-svg brand-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <path d="m9 12 2 2 4-4"/>
+          </svg>
+        </span>
+        <div class="brand-title">
+          <h1>Chromy 2</h1>
+          <p>Exam & Quiz Assistant</p>
+        </div>
+      </div>
+      <div class="status-indicator">
+        <span class="pulse-dot"></span>
+        <span id="active-status">Active</span>
+      </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="popup-tabs">
+      <button class="tab-btn active" data-tab="upload-tab">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        Upload Docs
+      </button>
+      <button class="tab-btn" data-tab="manage-tab">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        Database (<span id="tab-doc-count">0</span>)
+      </button>
+      <button class="tab-btn" data-tab="test-tab">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        Test Match
+      </button>
+    </nav>
+
+    <!-- Tab 1: Upload Documents -->
+    <main class="tab-content active" id="upload-tab">
+      <div class="form-group">
+        <label for="category-input" class="input-label">
+          Category / Exam Module Name
+        </label>
+        <input type="text" id="category-input" class="form-input" placeholder="e.g. CyberOps Module 1, Checkpoint Exam 1">
+      </div>
+
+      <!-- File Dropzone -->
+      <div class="dropzone" id="dropzone">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+          <path d="M12 18v-6"/>
+          <path d="m9 15 3-3 3 3"/>
+        </svg>
+        <div class="dropzone-text">
+          <strong>Click or Drag & Drop Document</strong>
+          <span>Supports Word (.docx), JSON, or TXT</span>
+        </div>
+        <input type="file" id="file-input" accept=".docx,.json,.txt" hidden>
+      </div>
+
+      <div class="divider"><span>OR PASTE TEXT</span></div>
+
+      <!-- Manual Text Input -->
+      <div class="form-group">
+        <textarea id="paste-text-input" class="form-textarea" placeholder="Paste Question and Answer text here...&#10;Example:&#10;Q: What is a Threat Actor?&#10;Answer: An individual or group that conducts malicious activities."></textarea>
+      </div>
+
+      <button id="btn-process-text" class="btn-primary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+        Parse & Save Text Q&A
+      </button>
+
+      <div id="upload-feedback" class="feedback-msg"></div>
+    </main>
+
+    <!-- Tab 2: Manage Database -->
+    <main class="tab-content" id="manage-tab">
+      <div class="stats-card">
+        <div class="stat-item">
+          <span class="stat-number" id="stat-total-q">0</span>
+          <span class="stat-label">Total Questions</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <span class="stat-number" id="stat-total-docs">0</span>
+          <span class="stat-label">Documents</span>
+        </div>
+      </div>
+
+      <div class="doc-list-container">
+        <h3>Uploaded Exam Documents</h3>
+        <div id="doc-list" class="doc-list">
+          <div class="empty-state">No documents uploaded yet. Upload a Word file to begin.</div>
+        </div>
+      </div>
+
+      <div class="manage-actions">
+        <button id="btn-export-json" class="btn-secondary">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Export Backup
+        </button>
+        <button id="btn-clear-all" class="btn-danger">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+          Clear All Data
+        </button>
+      </div>
+    </main>
+
+    <!-- Tab 3: Test Match -->
+    <main class="tab-content" id="test-tab">
+      <div class="form-group">
+        <label for="test-q-input" class="input-label">Test Question Query</label>
+        <textarea id="test-q-input" class="form-textarea" placeholder="Enter question text to test matcher..."></textarea>
+      </div>
+      <button id="btn-run-test" class="btn-primary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        Test Search Match
+      </button>
+
+      <div id="test-result-box" class="test-result-box">
+        <div class="result-placeholder">Enter a question above and click Test Search Match.</div>
+      </div>
+    </main>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
