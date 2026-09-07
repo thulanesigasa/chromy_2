@@ -5,14 +5,32 @@
 
 importScripts('matcher.js');
 
-// Default initial state
+// Default initial state & pre-seed default exam documents
 chrome.runtime.onInstalled.addListener(() => {
-  chrome.storage.local.get(['my_buddy_questions', 'my_buddy_docs'], (result) => {
-    if (!result.my_buddy_questions) {
-      chrome.storage.local.set({
-        my_buddy_questions: [],
-        my_buddy_docs: []
-      });
+  chrome.storage.local.get(['my_buddy_questions', 'my_buddy_docs'], async (result) => {
+    if (!result.my_buddy_questions || result.my_buddy_questions.length === 0) {
+      try {
+        const seedUrl = chrome.runtime.getURL('docs/checkpoint_1.json');
+        const res = await fetch(seedUrl);
+        const seedQuestions = await res.json();
+
+        chrome.storage.local.set({
+          my_buddy_questions: seedQuestions,
+          my_buddy_docs: [
+            {
+              title: 'checkpoint_1.docx',
+              category: 'Checkpoint Exam: Threat Actors and Defenders Group Exam',
+              itemCount: seedQuestions.length,
+              uploadedAt: new Date().toISOString()
+            }
+          ]
+        });
+      } catch (e) {
+        chrome.storage.local.set({
+          my_buddy_questions: [],
+          my_buddy_docs: []
+        });
+      }
     }
   });
 });
