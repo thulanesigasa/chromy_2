@@ -1,7 +1,7 @@
 /**
  * Chromy 2 - Floating Overlay & Highlighting UI
  * Strict 60-30-10 Palette: Black (60%), Dark Charcoal (30%), Vibrant Orange & White (10%).
- * Uses inline SVGs only, no emojis, no hover glow.
+ * Clean minimal header without status badge tag. SVGs only, no emojis, no hover glow.
  */
 
 (function () {
@@ -41,7 +41,6 @@
           <div class="my-buddy-brand">
             <span class="my-buddy-icon">${SVG_ICONS.shield}</span>
             <span class="my-buddy-title">Chromy 2</span>
-            <span class="my-buddy-badge" id="mb-status-badge">Scanning</span>
           </div>
           <div class="my-buddy-actions">
             <button class="mb-btn-icon" id="mb-btn-scan" title="Rescan Page">${SVG_ICONS.refresh}</button>
@@ -155,16 +154,12 @@
     updateMatchResult(result) {
       this.currentMatchData = result;
 
-      const badge = this.container.querySelector('#mb-status-badge');
       const confidence = this.container.querySelector('#mb-confidence');
       const aText = this.container.querySelector('#mb-a-text');
       const docMeta = this.container.querySelector('#mb-doc-meta');
       const highlightBtn = this.container.querySelector('#mb-btn-highlight');
 
       if (result.matchFound) {
-        badge.textContent = result.score >= 90 ? 'EXACT MATCH' : 'FUZZY MATCH';
-        badge.className = `my-buddy-badge ${result.score >= 90 ? 'badge-exact' : 'badge-fuzzy'}`;
-
         confidence.textContent = `${result.score}% MATCH`;
         confidence.style.display = 'inline-block';
 
@@ -178,9 +173,6 @@
           this.highlightOptionOnPage();
         }
       } else {
-        badge.textContent = 'NO MATCH';
-        badge.className = 'my-buddy-badge badge-none';
-
         confidence.style.display = 'none';
 
         if (result.reason) {
